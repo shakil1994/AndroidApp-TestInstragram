@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "547033269449",
+    "firebase_url": "https://androidinstragram.firebaseio.com",
+    "project_id": "androidinstragram",
+    "storage_bucket": "androidinstragram.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:547033269449:android:8a64b58543524354c8b918",
+        "android_client_info": {
+          "package_name": "com.example.shakil.androidinstragramclone"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "547033269449-abl49mjbh5cvcaec7o2998ssik7a67q1.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.shakil.androidinstragramclone",
+            "certificate_hash": "539c7005880044851e31b2540369231cbd944413"
+          }
+        },
+        {
+          "client_id": "547033269449-fv7tn8mj3pk02eqcb86epbacmfd88ge9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDn75i3oT5V6cFoYPWUvZCYi_wUWq-H2Gc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "547033269449-fv7tn8mj3pk02eqcb86epbacmfd88ge9.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
