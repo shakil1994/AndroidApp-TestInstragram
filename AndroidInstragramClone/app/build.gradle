@@ -28,13 +28,29 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'androidx.appcompat:appcompat:1.1.0'
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
-    implementation 'com.firebaseui:firebase-ui-auth:5.1.0'
-    implementation 'com.google.firebase:firebase-database:19.2.0'
+
+    implementation 'com.google.android.material:material:1.0.0'
+
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
 
+    //Firebase
+    implementation 'com.firebaseui:firebase-ui-auth:5.1.0'
+    implementation 'com.google.firebase:firebase-database:19.2.0'
+
     //Dialog
     implementation 'com.github.d-max:spots-dialog:1.1@aar'
+
+    //ButterKnife
+    implementation 'com.jakewharton:butterknife:10.2.0'
+    annotationProcessor 'com.jakewharton:butterknife-compiler:10.2.0'
+
+    //Glide For image loading
+    implementation 'com.github.bumptech.glide:glide:4.10.0'
+    annotationProcessor 'com.github.bumptech.glide:compiler:4.10.0'
+
+    //Circle Image View
+    implementation 'de.hdodenhof:circleimageview:3.0.1'
 
 }
