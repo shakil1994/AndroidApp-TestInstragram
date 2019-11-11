@@ -112,8 +112,8 @@ public class MainActivity extends AppCompatActivity {
 
         View itemView = LayoutInflater.from(this).inflate(R.layout.layout_register, null);
         CircleImageView user_image = itemView.findViewById(R.id.user_image);
-        EditText edt_full_name = itemView.findViewById(R.id.edt_user_name);
-        EditText edt_user_name = itemView.findViewById(R.id.edt_full_name);
+        EditText edt_user_name = itemView.findViewById(R.id.edt_user_name);
+        EditText edt_full_name = itemView.findViewById(R.id.edt_full_name);
         EditText edt_bio = itemView.findViewById(R.id.edt_bio);
         EditText edt_phone = itemView.findViewById(R.id.edt_phone);
 
