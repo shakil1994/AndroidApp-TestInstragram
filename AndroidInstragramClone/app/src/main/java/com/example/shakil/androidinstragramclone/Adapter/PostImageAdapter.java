@@ -1,6 +1,7 @@
 package com.example.shakil.androidinstragramclone.Adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.example.shakil.androidinstragramclone.CommentsActivity;
 import com.example.shakil.androidinstragramclone.Common.Common;
 import com.example.shakil.androidinstragramclone.Model.PostModel;
 import com.example.shakil.androidinstragramclone.Model.UserModel;
@@ -68,6 +70,8 @@ public class PostImageAdapter extends RecyclerView.Adapter<PostImageAdapter.MyVi
         isLiked(postModelList.get(position).getPostId(), holder.img_like);
         nrLikes(holder.txt_likes, postModelList.get(position).getPostId());
 
+        getAllComments(postModelList.get(position).getPostId(), holder.txt_comments);
+
         holder.img_like.setOnClickListener(view -> {
             if (holder.img_like.getTag().equals("like")){
                 FirebaseDatabase.getInstance().getReference().child("Likes").child(postModelList.get(position).getPostId())
@@ -77,6 +81,20 @@ public class PostImageAdapter extends RecyclerView.Adapter<PostImageAdapter.MyVi
                 FirebaseDatabase.getInstance().getReference().child("Likes").child(postModelList.get(position).getPostId())
                         .child(firebaseUser.getUid()).removeValue();
             }
+        });
+
+        holder.img_comment.setOnClickListener(view -> {
+            Intent intent = new Intent(context, CommentsActivity.class);
+            intent.putExtra("POSTID", postModelList.get(position).getPostId());
+            intent.putExtra("PUBLISHERID", postModelList.get(position).getPublisher());
+            context.startActivity(intent);
+        });
+
+        holder.txt_comments.setOnClickListener(view -> {
+            Intent intent = new Intent(context, CommentsActivity.class);
+            intent.putExtra("POSTID", postModelList.get(position).getPostId());
+            intent.putExtra("PUBLISHERID", postModelList.get(position).getPublisher());
+            context.startActivity(intent);
         });
     }
 
@@ -177,6 +195,22 @@ public class PostImageAdapter extends RecyclerView.Adapter<PostImageAdapter.MyVi
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 likes.setText(dataSnapshot.getChildrenCount() + " likes");
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    private void getAllComments(String postId, TextView comments){
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("Comments").child(postId);
+
+        reference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                comments.setText("View All " + dataSnapshot.getChildrenCount() + " Comments");
             }
 
             @Override
