@@ -64,6 +64,20 @@ public class PostImageAdapter extends RecyclerView.Adapter<PostImageAdapter.MyVi
         }
 
         publisherInfo(holder.img_profile, holder.txt_userName, holder.txt_publisher, postModelList.get(position).getPublisher());
+
+        isLiked(postModelList.get(position).getPostId(), holder.img_like);
+        nrLikes(holder.txt_likes, postModelList.get(position).getPostId());
+
+        holder.img_like.setOnClickListener(view -> {
+            if (holder.img_like.getTag().equals("like")){
+                FirebaseDatabase.getInstance().getReference().child("Likes").child(postModelList.get(position).getPostId())
+                        .child(firebaseUser.getUid()).setValue(true);
+            }
+            else {
+                FirebaseDatabase.getInstance().getReference().child("Likes").child(postModelList.get(position).getPostId())
+                        .child(firebaseUser.getUid()).removeValue();
+            }
+        });
     }
 
     @Override
@@ -122,6 +136,47 @@ public class PostImageAdapter extends RecyclerView.Adapter<PostImageAdapter.MyVi
                 Glide.with(context).load(userModel.getImageLink()).into(image);
                 userName.setText(userModel.getUserName());
                 publisher.setText(userModel.getUserName());
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    private void isLiked(String postId, ImageView imageView){
+        FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("Likes").child(postId);
+
+        reference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.child(firebaseUser.getUid()).exists()){
+                    imageView.setImageResource(R.drawable.ic_favorite_red_24dp);
+                    imageView.setTag("liked");
+                }
+                else {
+                    imageView.setImageResource(R.drawable.ic_favorite_border_black_24dp);
+                    imageView.setTag("like");
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    private void nrLikes(TextView likes, String postId){
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("Likes").child(postId);
+
+        reference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                likes.setText(dataSnapshot.getChildrenCount() + " likes");
             }
 
             @Override
