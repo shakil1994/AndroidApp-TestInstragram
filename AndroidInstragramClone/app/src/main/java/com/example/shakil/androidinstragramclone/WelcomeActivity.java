@@ -63,7 +63,18 @@ public class WelcomeActivity extends AppCompatActivity {
             return true;
         });
 
-        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new HomeFragment()).commit();
+        Bundle intent = getIntent().getExtras();
+        if (intent != null){
+            String publisher = intent.getString("PUBLISHERID");
 
+            SharedPreferences.Editor editor = getSharedPreferences("PREFS", MODE_PRIVATE).edit();
+            editor.putString("PROFILEID", publisher);
+            editor.apply();
+
+            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new ProfileFragment()).commit();
+        }
+        else {
+            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new HomeFragment()).commit();
+        }
     }
 }

@@ -3,6 +3,8 @@ package com.example.shakil.androidinstragramclone;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -11,6 +13,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.example.shakil.androidinstragramclone.Adapter.CommentsAdapter;
 import com.example.shakil.androidinstragramclone.Common.Common;
 import com.example.shakil.androidinstragramclone.Model.CommentsModel;
 import com.example.shakil.androidinstragramclone.Model.UserModel;
@@ -22,7 +25,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -30,11 +35,14 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class CommentsActivity extends AppCompatActivity {
 
-    /*@BindView(R.id.toolbar)
-    Toolbar toolbar;*/
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
 
     @BindView(R.id.img_profile)
     CircleImageView img_profile;
+
+    @BindView(R.id.recycler_comments_list)
+    RecyclerView recycler_comments_list;
 
     @BindView(R.id.edt_add_comment)
     EditText edt_add_comment;
@@ -46,6 +54,9 @@ public class CommentsActivity extends AppCompatActivity {
 
     FirebaseUser firebaseUser;
 
+    CommentsAdapter adapter;
+    List<CommentsModel> commentsModelList;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,12 +64,19 @@ public class CommentsActivity extends AppCompatActivity {
 
         ButterKnife.bind(this);
 
-        /*setSupportActionBar(toolbar);
+        recycler_comments_list.setHasFixedSize(true);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        recycler_comments_list.setLayoutManager(layoutManager);
+        commentsModelList = new ArrayList<>();
+        adapter = new CommentsAdapter(this, commentsModelList);
+        recycler_comments_list.setAdapter(adapter);
+
+        setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("Comments");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         toolbar.setNavigationOnClickListener(view -> {
             finish();
-        });*/
+        });
 
         firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
 
@@ -75,6 +93,8 @@ public class CommentsActivity extends AppCompatActivity {
         });
 
         getImage();
+
+        readComments();
     }
 
     private void addComment() {
@@ -87,8 +107,7 @@ public class CommentsActivity extends AppCompatActivity {
         reference.push().setValue(commentsModel).addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 Toast.makeText(this, "Your comment send !", Toast.LENGTH_SHORT).show();
-                startActivity(new Intent(this, WelcomeActivity.class));
-                finish();
+                edt_add_comment.setText("");
             }
         });
 
@@ -102,6 +121,27 @@ public class CommentsActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 UserModel userModel = dataSnapshot.getValue(UserModel.class);
                 Glide.with(getApplicationContext()).load(userModel.getImageLink()).into(img_profile);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    private void readComments(){
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Comments").child(postId);
+
+        reference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                commentsModelList.clear();
+                for (DataSnapshot commentSnapshot : dataSnapshot.getChildren()){
+                    CommentsModel commentsModel = commentSnapshot.getValue(CommentsModel.class);
+                    commentsModelList.add(commentsModel);
+                }
+                adapter.notifyDataSetChanged();
             }
 
             @Override

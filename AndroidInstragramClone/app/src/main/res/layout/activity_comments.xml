@@ -6,17 +6,18 @@
     android:layout_height="match_parent"
     tools:context=".CommentsActivity">
 
-   <!-- <androidx.appcompat.widget.Toolbar
+    <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="?android:attr/windowBackground" />-->
+        android:background="?android:attr/windowBackground" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recycler_view"
+        android:id="@+id/recycler_comments_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@id/bottom" />
+        android:layout_above="@id/bottom"
+        android:layout_below="@id/toolbar"/>
 
     <RelativeLayout
         android:id="@+id/bottom"
