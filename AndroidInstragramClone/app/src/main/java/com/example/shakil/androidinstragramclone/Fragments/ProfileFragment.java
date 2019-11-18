@@ -7,6 +7,8 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
@@ -18,6 +20,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.example.shakil.androidinstragramclone.Adapter.MyPhotoAdapter;
 import com.example.shakil.androidinstragramclone.Common.Common;
 import com.example.shakil.androidinstragramclone.Model.CommentsModel;
 import com.example.shakil.androidinstragramclone.Model.PostModel;
@@ -31,6 +34,10 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -113,6 +120,11 @@ public class ProfileFragment extends Fragment {
     FirebaseUser firebaseUser;
     String profileId;
 
+    //=========================
+    MyPhotoAdapter adapter;
+    List<PostModel> postModelList;
+    //=========================
+
     public ProfileFragment() {
         // Required empty public constructor
     }
@@ -130,9 +142,19 @@ public class ProfileFragment extends Fragment {
         SharedPreferences preferences = getContext().getSharedPreferences("PREFS", Context.MODE_PRIVATE);
         profileId = preferences.getString("PROFILEID", "none");
 
+        //=========================
+        recycler_photos.setHasFixedSize(true);
+        LinearLayoutManager layoutManager = new GridLayoutManager(getContext(), 3);
+        recycler_photos.setLayoutManager(layoutManager);
+        postModelList = new ArrayList<>();
+        adapter = new MyPhotoAdapter(getContext(), postModelList);
+        recycler_photos.setAdapter(adapter);
+        //=========================
+
         userInfo();
         getFollowers();
         getNrPosts();
+        myPhotos();
 
         if (profileId.equals(firebaseUser.getUid())){
             btn_profile.setText("Edit Profile");
@@ -237,6 +259,31 @@ public class ProfileFragment extends Fragment {
                     }
                 }
                 txt_posts.setText("" + i);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    //New =======================================
+    private void myPhotos(){
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Posts");
+
+        reference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                postModelList.clear();
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()){
+                    PostModel postModel = snapshot.getValue(PostModel.class);
+                    if (postModel.getPublisher().equals(profileId)){
+                        postModelList.add(postModel);
+                    }
+                }
+                Collections.reverse(postModelList);
+                adapter.notifyDataSetChanged();
             }
 
             @Override
