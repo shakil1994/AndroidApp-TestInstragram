@@ -1,6 +1,7 @@
 package com.example.shakil.androidinstragramclone.Fragments;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 
@@ -22,6 +23,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.example.shakil.androidinstragramclone.Adapter.MyPhotoAdapter;
 import com.example.shakil.androidinstragramclone.Common.Common;
+import com.example.shakil.androidinstragramclone.EditProfileActivity;
 import com.example.shakil.androidinstragramclone.Model.CommentsModel;
 import com.example.shakil.androidinstragramclone.Model.PostModel;
 import com.example.shakil.androidinstragramclone.Model.UserModel;
@@ -97,7 +99,7 @@ public class ProfileFragment extends Fragment {
         String btn = btn_profile.getText().toString();
 
         if (btn.equals("Edit Profile")) {
-            //Go to Edit Profile
+            startActivity(new Intent(getContext(), EditProfileActivity.class));
         } else if (btn.equals("follow")) {
             FirebaseDatabase.getInstance().getReference().child(Common.USER_FOLLOW).child(firebaseUser.getUid())
                     .child("following").child(profileId).setValue(true);

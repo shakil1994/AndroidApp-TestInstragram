@@ -58,4 +58,7 @@ dependencies {
 
     //Image Crop
     implementation 'com.theartofdev.edmodo:android-image-cropper:2.8.+'
+
+    //Material Edit Text
+    implementation 'com.rengwuxian.materialedittext:library:2.1.4'
 }
