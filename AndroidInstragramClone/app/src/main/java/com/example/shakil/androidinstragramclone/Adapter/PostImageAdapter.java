@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -72,6 +73,8 @@ public class PostImageAdapter extends RecyclerView.Adapter<PostImageAdapter.MyVi
 
         getAllComments(postModelList.get(position).getPostId(), holder.txt_comments);
 
+        isSaved(postModelList.get(position).getPostId(), holder.img_save);
+
         holder.img_like.setOnClickListener(view -> {
             if (holder.img_like.getTag().equals("like")){
                 FirebaseDatabase.getInstance().getReference().child("Likes").child(postModelList.get(position).getPostId())
@@ -95,6 +98,21 @@ public class PostImageAdapter extends RecyclerView.Adapter<PostImageAdapter.MyVi
             intent.putExtra("POSTID", postModelList.get(position).getPostId());
             intent.putExtra("PUBLISHERID", postModelList.get(position).getPublisher());
             context.startActivity(intent);
+        });
+
+        holder.img_save.setOnClickListener(v -> {
+            if (holder.img_save.getTag().equals("save")){
+                FirebaseDatabase.getInstance().getReference().child("Saves")
+                        .child(firebaseUser.getUid())
+                        .child(postModelList.get(position).getPostId())
+                        .setValue(true);
+            }
+            else {
+                FirebaseDatabase.getInstance().getReference().child("Saves")
+                        .child(firebaseUser.getUid())
+                        .child(postModelList.get(position).getPostId())
+                        .removeValue();
+            }
         });
     }
 
@@ -211,6 +229,31 @@ public class PostImageAdapter extends RecyclerView.Adapter<PostImageAdapter.MyVi
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 comments.setText("View All " + dataSnapshot.getChildrenCount() + " Comments");
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    private void isSaved(String postId, ImageView imageView){
+        FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("Saves").child(firebaseUser.getUid());
+
+        reference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.child(postId).exists()){
+                    imageView.setImageResource(R.drawable.ic_bookmark_black_24dp);
+                    imageView.setTag("saved");
+                }
+                else {
+                    imageView.setImageResource(R.drawable.ic_bookmark_border_black_24dp);
+                    imageView.setTag("save");
+                }
             }
 
             @Override
