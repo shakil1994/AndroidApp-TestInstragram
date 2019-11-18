@@ -1,15 +1,18 @@
 package com.example.shakil.androidinstragramclone.Adapter;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.example.shakil.androidinstragramclone.Fragments.PostDetailsFragment;
 import com.example.shakil.androidinstragramclone.Model.PostModel;
 import com.example.shakil.androidinstragramclone.R;
 
@@ -38,6 +41,15 @@ public class MyPhotoAdapter extends RecyclerView.Adapter<MyPhotoAdapter.MyViewHo
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
         Glide.with(context).load(postModelList.get(position).getPostImage()).into(holder.img_post);
+
+        holder.img_post.setOnClickListener(v -> {
+            SharedPreferences.Editor editor = context.getSharedPreferences("PREFS", Context.MODE_PRIVATE).edit();
+            editor.putString("POSTID", postModelList.get(position).getPostId());
+            editor.apply();
+
+            ((FragmentActivity) context).getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.fragment_container, new PostDetailsFragment()).commit();
+        });
     }
 
     @Override
