@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.shakil.androidinstragramclone.Common.Common;
 import com.example.shakil.androidinstragramclone.Fragments.ProfileFragment;
+import com.example.shakil.androidinstragramclone.Model.Notification;
 import com.example.shakil.androidinstragramclone.Model.UserModel;
 import com.example.shakil.androidinstragramclone.R;
 import com.google.firebase.auth.FirebaseAuth;
@@ -82,6 +83,8 @@ public class UserSearchAdapter extends RecyclerView.Adapter<UserSearchAdapter.My
 
                 FirebaseDatabase.getInstance().getReference().child(Common.USER_FOLLOW).child(userModelList.get(position).getUid())
                         .child("followers").child(firebaseUser.getUid()).setValue(true);
+
+                addNotifications(userModelList.get(position).getUid());
             }
             else {
 
@@ -143,5 +146,17 @@ public class UserSearchAdapter extends RecyclerView.Adapter<UserSearchAdapter.My
 
             }
         });
+    }
+
+    private void addNotifications(String userId){
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Notifications").child(userId);
+
+        Notification notification = new Notification();
+        notification.setUserId(firebaseUser.getUid());
+        notification.setText("started following you");
+        notification.setPostId("");
+        notification.setPost(false);
+
+        reference.push().setValue(notification);
     }
 }

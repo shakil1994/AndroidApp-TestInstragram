@@ -25,6 +25,7 @@ import com.example.shakil.androidinstragramclone.Adapter.MyPhotoAdapter;
 import com.example.shakil.androidinstragramclone.Common.Common;
 import com.example.shakil.androidinstragramclone.EditProfileActivity;
 import com.example.shakil.androidinstragramclone.Model.CommentsModel;
+import com.example.shakil.androidinstragramclone.Model.Notification;
 import com.example.shakil.androidinstragramclone.Model.PostModel;
 import com.example.shakil.androidinstragramclone.Model.UserModel;
 import com.example.shakil.androidinstragramclone.R;
@@ -106,6 +107,9 @@ public class ProfileFragment extends Fragment {
 
             FirebaseDatabase.getInstance().getReference().child(Common.USER_FOLLOW).child(profileId)
                     .child("followers").child(firebaseUser.getUid()).setValue(true);
+
+            addNotifications();
+
         } else if (btn.equals("following")) {
             FirebaseDatabase.getInstance().getReference().child(Common.USER_FOLLOW).child(firebaseUser.getUid())
                     .child("following").child(profileId).removeValue();
@@ -360,5 +364,17 @@ public class ProfileFragment extends Fragment {
 
             }
         });
+    }
+
+    private void addNotifications(){
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Notifications").child(profileId);
+
+        Notification notification = new Notification();
+        notification.setUserId(firebaseUser.getUid());
+        notification.setText("started following you");
+        notification.setPostId("");
+        notification.setPost(false);
+
+        reference.push().setValue(notification);
     }
 }

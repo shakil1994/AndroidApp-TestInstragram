@@ -16,6 +16,7 @@ import com.bumptech.glide.Glide;
 import com.example.shakil.androidinstragramclone.Adapter.CommentsAdapter;
 import com.example.shakil.androidinstragramclone.Common.Common;
 import com.example.shakil.androidinstragramclone.Model.CommentsModel;
+import com.example.shakil.androidinstragramclone.Model.Notification;
 import com.example.shakil.androidinstragramclone.Model.UserModel;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -106,6 +107,8 @@ public class CommentsActivity extends AppCompatActivity {
 
         reference.push().setValue(commentsModel).addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
+                addNotifications();
+
                 Toast.makeText(this, "Your comment send !", Toast.LENGTH_SHORT).show();
                 edt_add_comment.setText("");
             }
@@ -149,5 +152,17 @@ public class CommentsActivity extends AppCompatActivity {
 
             }
         });
+    }
+
+    private void addNotifications(){
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Notifications").child(publisherId);
+
+        Notification notification = new Notification();
+        notification.setUserId(firebaseUser.getUid());
+        notification.setText("commented: " + edt_add_comment.getText().toString());
+        notification.setPostId(postId);
+        notification.setPost(true);
+
+        reference.push().setValue(notification);
     }
 }

@@ -19,9 +19,12 @@ import com.example.shakil.androidinstragramclone.CommentsActivity;
 import com.example.shakil.androidinstragramclone.Common.Common;
 import com.example.shakil.androidinstragramclone.Fragments.PostDetailsFragment;
 import com.example.shakil.androidinstragramclone.Fragments.ProfileFragment;
+import com.example.shakil.androidinstragramclone.Model.Notification;
 import com.example.shakil.androidinstragramclone.Model.PostModel;
 import com.example.shakil.androidinstragramclone.Model.UserModel;
 import com.example.shakil.androidinstragramclone.R;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -83,6 +86,8 @@ public class PostImageAdapter extends RecyclerView.Adapter<PostImageAdapter.MyVi
             if (holder.img_like.getTag().equals("like")){
                 FirebaseDatabase.getInstance().getReference().child("Likes").child(postModelList.get(position).getPostId())
                         .child(firebaseUser.getUid()).setValue(true);
+
+                addNotifications(postModelList.get(position).getPublisher(), postModelList.get(position).getPostId());
             }
             else {
                 FirebaseDatabase.getInstance().getReference().child("Likes").child(postModelList.get(position).getPostId())
@@ -301,5 +306,17 @@ public class PostImageAdapter extends RecyclerView.Adapter<PostImageAdapter.MyVi
 
             }
         });
+    }
+
+    private void addNotifications(String userId, String postId){
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Notifications").child(userId);
+
+        Notification notification = new Notification();
+        notification.setUserId(firebaseUser.getUid());
+        notification.setText("liked your post");
+        notification.setPostId(postId);
+        notification.setPost(true);
+
+        reference.push().setValue(notification);
     }
 }
