@@ -29,6 +29,7 @@ import com.example.shakil.androidinstragramclone.Model.CommentsModel;
 import com.example.shakil.androidinstragramclone.Model.Notification;
 import com.example.shakil.androidinstragramclone.Model.PostModel;
 import com.example.shakil.androidinstragramclone.Model.UserModel;
+import com.example.shakil.androidinstragramclone.OptionsActivity;
 import com.example.shakil.androidinstragramclone.R;
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.firebase.auth.FirebaseAuth;
@@ -120,9 +121,8 @@ public class ProfileFragment extends Fragment {
         }
     }
 
-    //=================================
     @OnClick(R.id.txt_followers)
-    void onTextFollowersClick(){
+    void onTextFollowersClick() {
         Intent intent = new Intent(getContext(), FollowersActivity.class);
         intent.putExtra("ID", profileId);
         intent.putExtra("TITLE", "followers");
@@ -130,13 +130,12 @@ public class ProfileFragment extends Fragment {
     }
 
     @OnClick(R.id.txt_following)
-    void onTextFollowingClick(){
+    void onTextFollowingClick() {
         Intent intent = new Intent(getContext(), FollowersActivity.class);
         intent.putExtra("ID", profileId);
         intent.putExtra("TITLE", "following");
         startActivity(intent);
     }
-    //=================================
 
     @OnClick(R.id.img_photos)
     void onPhotosClick() {
@@ -148,6 +147,11 @@ public class ProfileFragment extends Fragment {
     void onSavedPhotosClick() {
         recycler_photos.setVisibility(View.GONE);
         recycler_saved_photos.setVisibility(View.VISIBLE);
+    }
+
+    @OnClick(R.id.img_menu)
+    void onMenuClick() {
+        startActivity(new Intent(getContext(), OptionsActivity.class));
     }
 
     Unbinder unbinder;
@@ -367,10 +371,10 @@ public class ProfileFragment extends Fragment {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 savePostModelList.clear();
-                for (DataSnapshot snapshot : dataSnapshot.getChildren()){
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     PostModel postModel = snapshot.getValue(PostModel.class);
-                    for (String id : mySaves){
-                        if (postModel.getPostId().equals(id)){
+                    for (String id : mySaves) {
+                        if (postModel.getPostId().equals(id)) {
                             savePostModelList.add(postModel);
                         }
                     }
@@ -385,7 +389,7 @@ public class ProfileFragment extends Fragment {
         });
     }
 
-    private void addNotifications(){
+    private void addNotifications() {
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Notifications").child(profileId);
 
         Notification notification = new Notification();

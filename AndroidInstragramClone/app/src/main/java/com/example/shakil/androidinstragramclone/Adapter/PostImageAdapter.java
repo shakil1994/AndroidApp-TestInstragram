@@ -15,6 +15,7 @@ import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.example.shakil.androidinstragramclone.CommentsActivity;
 import com.example.shakil.androidinstragramclone.Common.Common;
 import com.example.shakil.androidinstragramclone.FollowersActivity;
@@ -65,7 +66,9 @@ public class PostImageAdapter extends RecyclerView.Adapter<PostImageAdapter.MyVi
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
         firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
 
-        Glide.with(context).load(postModelList.get(position).getPostImage()).into(holder.img_post);
+        Glide.with(context).load(postModelList.get(position).getPostImage())
+                .apply(new RequestOptions().placeholder(R.drawable.placeholder))
+                .into(holder.img_post);
 
         if (postModelList.get(position).getDescription().equals("")) {
             holder.txt_description.setVisibility(View.GONE);
@@ -161,14 +164,12 @@ public class PostImageAdapter extends RecyclerView.Adapter<PostImageAdapter.MyVi
                     .replace(R.id.fragment_container, new PostDetailsFragment()).commit();
         });
 
-        //==========================
         holder.txt_likes.setOnClickListener(v -> {
             Intent intent = new Intent(context, FollowersActivity.class);
             intent.putExtra("ID", postModelList.get(position).getPostId());
             intent.putExtra("TITLE", "likes");
             context.startActivity(intent);
         });
-        //==========================
     }
 
     @Override

@@ -1,6 +1,7 @@
 package com.example.shakil.androidinstragramclone.Fragments;
 
 
+import android.app.AlertDialog;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -11,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 
 import com.example.shakil.androidinstragramclone.Adapter.PostImageAdapter;
 import com.example.shakil.androidinstragramclone.Common.Common;
@@ -29,6 +31,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
+import dmax.dialog.SpotsDialog;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -39,6 +42,8 @@ public class HomeFragment extends Fragment {
 
     @BindView(R.id.recycler_image_post)
     RecyclerView recycler_image_post;
+
+    AlertDialog dialog;
 
     private PostImageAdapter adapter;
     private List<PostModel> postModels;
@@ -57,6 +62,8 @@ public class HomeFragment extends Fragment {
         View itemView = inflater.inflate(R.layout.fragment_home, container, false);
 
         unbinder = ButterKnife.bind(this, itemView);
+
+        dialog = new SpotsDialog.Builder().setCancelable(false).setContext(getContext()).build();
 
         recycler_image_post.setHasFixedSize(true);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
@@ -97,6 +104,7 @@ public class HomeFragment extends Fragment {
     }
 
     private void readPosts() {
+        dialog.show();
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Posts");
 
         reference.addValueEventListener(new ValueEventListener() {
@@ -113,6 +121,7 @@ public class HomeFragment extends Fragment {
                     }
                 }
                 adapter.notifyDataSetChanged();
+                dialog.dismiss();
             }
 
             @Override
