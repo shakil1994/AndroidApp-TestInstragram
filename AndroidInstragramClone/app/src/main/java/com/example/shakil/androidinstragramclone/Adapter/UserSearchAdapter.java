@@ -1,6 +1,7 @@
 package com.example.shakil.androidinstragramclone.Adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,9 +16,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.shakil.androidinstragramclone.Common.Common;
 import com.example.shakil.androidinstragramclone.Fragments.ProfileFragment;
+import com.example.shakil.androidinstragramclone.MainActivity;
 import com.example.shakil.androidinstragramclone.Model.Notification;
 import com.example.shakil.androidinstragramclone.Model.UserModel;
 import com.example.shakil.androidinstragramclone.R;
+import com.example.shakil.androidinstragramclone.WelcomeActivity;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -39,11 +42,15 @@ public class UserSearchAdapter extends RecyclerView.Adapter<UserSearchAdapter.My
     List<UserModel> userModelList;
 
     FirebaseUser firebaseUser;
+    //======================
+    private boolean isFragment;
 
-    public UserSearchAdapter(Context context, List<UserModel> userModelList) {
+    public UserSearchAdapter(Context context, List<UserModel> userModelList, boolean isFragment) {
         this.context = context;
         this.userModelList = userModelList;
+        this.isFragment = isFragment;
     }
+    //======================
 
     @NonNull
     @Override
@@ -69,11 +76,21 @@ public class UserSearchAdapter extends RecyclerView.Adapter<UserSearchAdapter.My
         }
 
         holder.itemView.setOnClickListener(view -> {
-            SharedPreferences.Editor editor = context.getSharedPreferences("PREFS", Context.MODE_PRIVATE).edit();
-            editor.putString("PROFILEID", userModelList.get(position).getUid());
-            editor.apply();
+            //=====================
+            if (isFragment) {
+                SharedPreferences.Editor editor = context.getSharedPreferences("PREFS", Context.MODE_PRIVATE).edit();
+                editor.putString("PROFILEID", userModelList.get(position).getUid());
+                editor.apply();
 
-            ((FragmentActivity) context).getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new ProfileFragment());
+                ((FragmentActivity) context).getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.fragment_container, new ProfileFragment());
+            }
+            else {
+                Intent intent = new Intent(context, WelcomeActivity.class);
+                intent.putExtra("PUBLISHERID", userModelList.get(position).getUid());
+                context.startActivity(intent);
+            }
+            //===========================
         });
 
         holder.btn_follow.setOnClickListener(view -> {

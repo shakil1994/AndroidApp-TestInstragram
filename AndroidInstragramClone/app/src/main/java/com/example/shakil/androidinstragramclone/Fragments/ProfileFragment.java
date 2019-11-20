@@ -24,6 +24,7 @@ import com.bumptech.glide.Glide;
 import com.example.shakil.androidinstragramclone.Adapter.MyPhotoAdapter;
 import com.example.shakil.androidinstragramclone.Common.Common;
 import com.example.shakil.androidinstragramclone.EditProfileActivity;
+import com.example.shakil.androidinstragramclone.FollowersActivity;
 import com.example.shakil.androidinstragramclone.Model.CommentsModel;
 import com.example.shakil.androidinstragramclone.Model.Notification;
 import com.example.shakil.androidinstragramclone.Model.PostModel;
@@ -118,6 +119,24 @@ public class ProfileFragment extends Fragment {
                     .child("followers").child(firebaseUser.getUid()).removeValue();
         }
     }
+
+    //=================================
+    @OnClick(R.id.txt_followers)
+    void onTextFollowersClick(){
+        Intent intent = new Intent(getContext(), FollowersActivity.class);
+        intent.putExtra("ID", profileId);
+        intent.putExtra("TITLE", "followers");
+        startActivity(intent);
+    }
+
+    @OnClick(R.id.txt_following)
+    void onTextFollowingClick(){
+        Intent intent = new Intent(getContext(), FollowersActivity.class);
+        intent.putExtra("ID", profileId);
+        intent.putExtra("TITLE", "following");
+        startActivity(intent);
+    }
+    //=================================
 
     @OnClick(R.id.img_photos)
     void onPhotosClick() {

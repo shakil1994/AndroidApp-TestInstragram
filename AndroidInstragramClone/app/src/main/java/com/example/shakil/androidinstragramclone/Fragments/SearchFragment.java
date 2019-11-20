@@ -73,7 +73,7 @@ public class SearchFragment extends Fragment {
         recycler_search_result.setLayoutManager(new LinearLayoutManager(getContext()));
 
         userModels = new ArrayList<>();
-        adapter = new UserSearchAdapter(getContext(), userModels);
+        adapter = new UserSearchAdapter(getContext(), userModels, true);
         recycler_search_result.setAdapter(adapter);
 
         readUsers();
